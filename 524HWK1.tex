@@ -1,0 +1,178 @@
+\documentclass[11pt]{article} % this tells LaTeX to make an article (as opposed to a book, for example)
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{indentfirst}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\definecolor{dark_green}{HTML}{008000}
+
+\usepackage{fancyhdr}
+\usepackage{fixmath}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tikzscale}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{setspace}
+\onehalfspacing
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.75]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage[left=1in,
+        right=1in,
+        top=1in,
+        bottom=1in,
+        includefoot, heightrounded]{geometry}
+\usepackage{microtype}
+
+\DeclareMathOperator{\image}{Im}
+\DeclareMathOperator{\aut}{Aut}
+\newcommand{\R}{\mathbb{R}}
+
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Qiyuan Zheng, WesID: 339693}
+\lhead{MATH524, PS1}
+\cfoot{\thepage}
+\begin{document}
+\section*{Problem 1}
+Let $X$ be a Hausdorff topological space and $Y = X\cup\{\infty\}$ and let $\mathcal{T}_Y= \{U:U\in \mathcal{T}_X\text{ or }U = Y\setminus C\text{ for compact }C\subseteq X\}$. Show that $\mathcal{T}_Y$ is indeed a topology and $Y$ is compact.
+
+\begin{proof}[Proof of Claim A]
+Since $\emptyset\in \mathcal{T}_X$ and $\emptyset$ is compact, we know that both $\emptyset, Y\in \mathcal{T}_Y$. We want to show that $\mathcal{T}_Y$ is closed under arbitrary unions. Suppose $\{U_\alpha\}\subseteq \mathcal{T}_Y$, if $U_\alpha\in \mathcal{T}_X$ for all $\alpha$, we're done. On the other hand, if $U_\alpha = Y\setminus C_\alpha$ for each $\alpha$ and compact subsets $C_\alpha\subseteq X$, we have $\bigcup_\alpha Y\setminus C_\alpha = Y\setminus \bigcap_\alpha C_\alpha$. Since each $C_\alpha$ is closed (as $X$ is Hausdorff), we know that $\bigcap_\alpha C_\alpha$ is a closed subset of a compact set and thus it's compact in $X$. Hence, $Y\setminus \bigcap_\alpha C_\alpha \in \mathcal{T}_Y$. Therefore, it suffices to show that, for $V\in \mathcal{T}_X$ and $C$ compact in $X$, we have $U\cup (Y\setminus C)\in \mathcal{T}_Y$. Consider the following:
+\[U\cup (Y\setminus C) = \{\infty\}\cup (X\setminus C) \cup [X\setminus(X\setminus U)] = \{\infty\}\cup [X\setminus (C\cap X\setminus U)] = Y\setminus (C\cap X\setminus U).\]
+Since $U$ is open in $X$, we know that $C\cap X\setminus U$ is closed in $X$ and, since $C$ is compact, it's a closed subset of a compact set and thus it's also compact. Hence, we get $U \cup (Y\setminus C) = Y\setminus K$ for some compact $K\subseteq X$ and thus $U \cup (Y\setminus C)\in \mathcal{T}_Y$.
+
+For finite intersections, let $U_1,U_2,\ldots, U_n\in \mathcal{T}_Y$. If there exists some $k$ such that $U_k\in \mathcal{T}_X$, then $\bigcap_{i=1}^n U_i\in \mathcal{T}_X\subseteq \mathcal{T}_Y$ since each $Y\setminus C$ ``reduces to'' $X\setminus C$ (as the $\infty$ is intersected out) and $X\setminus C\in \mathcal{T}_X$ since $C$ is a compact set in a Hausdorff space and thus it's closed. On the other hand, if every $U_k = Y\setminus C_k$, we can get
+\[\bigcap_{i=1}^n Y\setminus C_i = Y\setminus \bigcup_{i=1}^n C_i\in \mathcal{T}_Y\]
+since the finite union of compact sets is compact.
+\end{proof}
+
+\begin{proof}[Proof of Claim B]
+We now show that $Y$ is compact. Let $\{U_\alpha\}$ be an open cover for $Y$. Then, there must exist some $U_{\alpha'}$ such that $U_{\alpha'} = Y\setminus C$ for some compact $C\subseteq X$. Now, each $U_\alpha$ is either open in $X$ or is of the form $Y\setminus C_\alpha$, where $C_\alpha$ are compact in $X$ and are thus closed in $X$. These together form an open cover of $C$ and notice that this open cover has a finite subcover if and only if the open cover $\{\widetilde{U}_\alpha\}$, where each $\widetilde{U}_\alpha = X\setminus C_\alpha$ if $U_\alpha = Y\setminus C_\alpha$ and $\widetilde{U}_\alpha = U_\alpha$ if else, has a finite subcover. Since $\{\widetilde{U}_\alpha\}$ is an open cover of $C$ in $\mathcal{T}_X$, it must have a finite subcover and thus our proof is complete.
+\end{proof}
+
+\section*{Problem 2}
+Let $\phi:S^n\setminus N\to \R^n$ be the stereographic projection (homeomorphism) where $N$ is north pole. Let $Y = \R^n\cup\{\infty\}$ be the one-point compactification of $\R^n$. Show that there exists an extension of $\phi$ that's a homeomorphism $\phi^*:S^n\to Y$ where $\phi^*(N)=\infty$.
+
+\begin{proof}
+It's clear that $\phi^*$ is a bijection. We just need to show that it's continuous and an open map. Let $U\in \mathcal{T}_Y$, if $U$ is open in $\R^n$ then it's trivial. Suppose $U = Y\setminus C$, then we have $(\phi^*)^{-1}(Y\setminus C) = (\phi^*)^{-1}(Y)\setminus (\phi^*)^{-1}(C) = S^n\setminus \phi^{-1}(C)$ since $\phi^*$ is a bijection and $C\subseteq \R^n$. Since $\phi$ is a homeomorphism on the restricted domain and codomain, we know that $\phi^{-1}(C)$ is compact in $S^n\setminus N$ and thus it's compact in $S^n$. Hence, as $S^n$ is Hausdorff, $\phi^{-1}(C)$ is closed. Therefore, $S^n\setminus \phi^{-1}(C)$ is open and thus $\phi^*$ is continuous.
+
+We know show that $\phi^*$ is an open map. Let $U\subseteq S^n$ to be open, note that we only need to consider the case when $N\in U$. Consider
+\[\phi^*(U) = \phi^*(S^n\setminus (S^n\setminus U)) = \phi^*(S^n)\setminus \phi^*(S^n\setminus U) = Y\setminus \phi^*(S^n\setminus U).\]
+since $\phi^*$ is a bijection. Now, since $S^n$ is compact, we know that $S^n\setminus U$ is a closed subset of a compact set, so it's compact. Further, as $N\in U$, we have $S^n\setminus U = (S^n\setminus N)\setminus U$, so $S^n\setminus U\subseteq S^n\setminus N$ is also compact in the subspace topology of $S^n\setminus N$. We thus have 
+\[\phi^*(U) = Y\setminus \phi(S^n\setminus U)\]
+and that $\phi(S^n\setminus U)$ is compact in $\R^n$ since $\phi$ is continuous. Thus, $\phi^*(U)$ is open in $Y$.
+\end{proof}
+
+\section*{Problem 3}
+Define $f:S^2_1\to S^2_2:(x,y,z)\mapsto (-x,y,z)$ and $Z = \xoverline{B}^3_1\cup_f \xoverline{B}^3_2$.\footnote{I use a bar to denote closed balls and I indexed them to keep track of which one is which.} We want to show that $Z$ is homeomorphic to $Y$, the one-point compactification of $\R^3$. Using the theorem from Lee, it suffices to show that there exists two quotient maps, $q_1:\xoverline{B}^3_1\coprod \xoverline{B}^3_2\to Z$ and $q_2:\xoverline{B}^3_1\coprod \xoverline{B}^3_2\to Y$ that make the same identifications. Once this this shown, we can just let $\varphi(z) = q_2(q_1^{-1}(\{z\}))$ to be our homeomorphism. We now prove that claim.
+
+\begin{proof}
+Let $q_1:\xoverline{B}^3_1\coprod \xoverline{B}^3_2\to Z:p\mapsto[p]$ be the projection map onto the adjunction space. It's a quotient space by construction. We define $q_2:\xoverline{B}^3_1\coprod \xoverline{B}^3_2\to Y$ as follows:
+\[q_2(x,y,z) = \begin{cases}
+(x,y,z) & (x,y,z)\in \xoverline{B}_1^3 \\
+\frac{(-x,y,z)}{(x^2+y^2+z^2)} & (x,y,z)\in \xoverline{B}_2^3\setminus\{\mathbf{0}_2\} \\
+\infty & (x,y,z) = \mathbf{0}_2.
+\end{cases}\]
+
+We first show that $q_1$ and $q_2$ make the same identifications. Note that these two functions are injective on the set $B_1^3\coprod B_2^3$ and thus they make the same identifications. On their boundaries, we have
+\[q_1(x,y,z) = q_1(x',y',z') \iff x = \pm x',y=y',z=z'\iff q_2(x,y,z) = q_2(x',y',z').\]
+Thus, $q_1$ and $q_2$ indeed make the same identifications. We now need to show that $q_2$ is a quotient map.
+
+We first show continuity by the characteristic property of the disjoint union topology. The restriction to $\xoverline{B}_1^3$ is the identity map, so its continuous.\footnote{This is not too trivial in the case that $U\in \mathcal{T}_Y$ is such that $U=Y\setminus C$. But since $\xoverline{B}_1^3$ only maps to $\R^3$, the preimage of $Y\setminus C$ would be the same as that of $X\setminus C$, which is open since compact sets are closed in Hausdorff spaces.} Now consider $q_2\big|_{\xoverline{B}_2^3}$ and take $U\in \mathcal{T}_Y$. If $U$ is open in $\R^3$, then $q_2\big|_{\xoverline{B}_2^3}^{-1}(U) = \gamma^{-1}(U)$ where $\gamma:\xoverline{B}_2^3\setminus\{\mathbf{0}_2\}\to\R^3$ is defined as $(x,y,z)\mapsto \frac{(-x,y,z)}{(x^2+y^2+z^2)}$.\footnote{In other words, $\gamma$ is the restriction of $q_2\big|_{\xoverline{B}_2^3}^{-1}(U)$ on $\xoverline{B}_2^3\setminus\{\mathbf{0}_2\}$.} Since $\gamma$ is continuous (its a composition of continuous functions), we know that $\gamma^{-1}(U)$ is open in $\xoverline{B}_2^3\setminus\{\mathbf{0}_2\}$, which itself is open in $\xoverline{B}_2^3$. Thus, we have $q_2\big|_{\xoverline{B}_2^3}^{-1}(U) = \gamma^{-1}(U)$ is open in $\xoverline{B}_2^3$. On the other hand, suppose $U = Y\setminus C$. Notice that the function $\psi:\xoverline{B}_2^3\setminus\{\mathbf{0}_2\}\to \R^3\setminus B^3$ so that $\psi(x,y,z) = \frac{(-x,y,z)}{(x^2+y^2+z^2)}$ is a homeomorphism. Now, notice that
+\[q_2\big|_{\xoverline{B}_2^3}^{-1}(Y\setminus C) = \xoverline{B}_2^3\setminus q_2\big|_{\xoverline{B}_2^3}^{-1}(C\cap (\R^3\setminus B_3)) = \xoverline{B}_2^3\setminus \psi^{-1}(C\cap (\R^3\setminus B_3)).\]
+Now, since $\psi$ is a homeomorphism, we know that $\psi^{-1}(C\cap (\R^3\setminus B_3))$ is compact in $\xoverline{B}_2^3\setminus\{\mathbf{0}_2\}$ and thus it's compact in $\xoverline{B}_2^3$. Since $\xoverline{B}_2^3$ is Hausdorff, it's also closed and thus $q_2\big|_{\xoverline{B}_2^3}^{-1}(Y\setminus C) = \xoverline{B}_2^3\setminus \psi^{-1}(C\cap (\R^3\setminus B_3))$ is open in $\xoverline{B}_2^3$.
+
+It remains to check that saturated open sets gets mapped to open sets under $q_2$. Let $U\subseteq \xoverline{B}^3_1\coprod \xoverline{B}^3_2$ be a saturated open set. If $U$ intersects both balls in their interiors, then the result is trivial.\footnote{For sets containing the center of $\xoverline{B}^3_1$, the image would be of the form $Y\setminus K$ for compact $K\subseteq \R^3$.} On the other hand, observe that, if $U$ is a saturated open set, then $(x,y,z)\in U\cap \xoverline{B}^3_1\cap S^2_1$ if and only if $(-x,y,z)\in U\cap \xoverline{B}^3_2\cap S^2_2$. This implies that any boundary points on both balls will have a smaller open ball containing them and the image will map to an open set in $\R^3$.
+\end{proof}
+
+\section*{Problem 4}
+a) A space is contractible if it has the homotopy type of a point or equivalently if the identity map on the space is nullhomotopic. Show that these definitions are equivalent.
+
+\begin{proof}
+$\implies:$ Suppose $X$ is homotopic equivalent to $\{p\}$. Then, there exists $\varphi,\psi$ where $\varphi:X\to\{p\}$ and $\psi:\{p\}\to X$ such that $\varphi\circ \psi\simeq id_{\{p\}}$ and $\psi\circ \varphi\simeq id_X$. However, notice that $\psi\circ\varphi$ maps every $x\in X$ to $\psi(p)\in X$, thus it's a constant map. Hence, $id_X$ is nullhomotopic.
+
+$\impliedby:$ Suppose $id_X\simeq const$ where $const:X\to X:x\mapsto x_0$. Consider the functions $\varphi:X\to \{x_0\}:x\mapsto \{x_0\}$ and $\psi:\{x_0\}\to X:x_0\mapsto x_0$ (i.e. the inclusion map). Now, we have $\varphi\circ \psi:\{x_0\}\to\{x_0\}:x_0\mapsto x_0$  and thus $\varphi\circ \psi\simeq id_{\{x_0\}}$ (equality actually holds). Also, notice that $\psi\circ\varphi:X\to X$ maps $\psi(\varphi(x)) = x_0$ for each $x\in X$. Thus, $\psi\circ\varphi = const \simeq id_X$ by our hypothesis.
+\end{proof}
+
+b) If $Y$ is contractible, show that, for all $X$, the set $[X,Y]$ has a single element.
+
+\begin{proof}
+We claim that $[X,Y] = \{[c_{\{y_0\}}]\}$ where $y_0\in Y$ and $c_{\{y_0\}}:X\to Y:x\mapsto y_0$. Now, let $f:X\to Y$ be a continuous function. Since $Y$ is contractible, we have $id_Y\simeq const$ where $const:Y\to Y:y\mapsto y_0$. Composing by $f$ on the right side of both, we have $id_Y\circ f \simeq const\circ f$. Notice that $id_Y\circ f \equiv f$ and $const\circ f\equiv c_{\{y_0\}}$ so we indeed have $f\simeq c_{\{y_0\}}$.
+\end{proof}
+
+c) Suppose $X$ is contractible and $Y$ is path connected, show that $[X,Y]$ has a single element.
+
+\begin{proof}
+Since $Y$ is path connected, we have $c_{y'}\simeq c_{y''}$ for all $y',y''\in Y$ and $c_{y'}:Y\to Y:y\mapsto y'$ and similarly for $y''$. Thus, it suffices to show that, for continuous $f:X\to Y$, we have $f\simeq c_{y_0}$ for some $y_0\in Y$. Since $X$ is contractible, we have $id_X\simeq c_{x_0}$ and thus $f\circ id_X\simeq f\circ c_{x_0}$. We can conclude that $f\circ c_{f(x_0)}$.
+\end{proof}
+
+\section*{Problem 5}
+Class 1:
+\begin{enumerate}
+	\item $S^1$
+	\item $S^1\times I$
+	\item The Möbius Band
+	\item $D\times S^1$
+	\item $\{\vec{x}\in\R^2:\|\vec{x}\|>1\}$
+	\item $\{\vec{x}\in\R^2:\|\vec{x}\|\geq1\}$
+	\item $S^1\cup(\R_{+}\times\{0\})\subseteq \R^2$
+	\item $S^1\cup (\R_{+}\times\R)\subseteq \R^2$
+	\item $\R^3$ with $z$ axis deleted
+	\item $S^3$ with one circle deleted
+\end{enumerate}
+
+Class 2:
+\begin{enumerate}
+	\item $S^1\vee S^1$
+	\item Torus minus a point
+	\item Klein bottle minus a point
+	\item Möbius band minus a point
+	\item $S^1\cup (\R\times\{0\})\subseteq \R^2$
+\end{enumerate}
+
+Class 3:
+\begin{enumerate}
+	\item $S^1\times S^1$
+	\item $R^3$ with the $z$-axis and the unit circle on the $xy$ plane deleted
+	\item $S^3$ with two linked circles delted
+\end{enumerate}
+
+Class 4: Torus minus 2 points (retracts to $S^1\vee S^1\vee S^1$).
+
+Class 5: $R^2$ with positive $x$-axis delted (this space is contractible).
+
+Class 6: $\R^3$ with the circle is deleted (it's $(S^2\vee S^1)\vee (S^2\vee S^1)$)
+
+Class 7: $S^3$ with two unlinked circles deleted (I think it is $(S^2\vee S^1)\vee (S^2\vee S^1)\vee S^1$).
+
+
+
+\end{document}
